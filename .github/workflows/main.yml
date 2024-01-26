@@ -43,6 +43,8 @@ jobs:
 
           echo "Cài đặt package theo package.json"
           npm ci
+          echo "Khởi tạo prismaClient cho node modules "
+          npx prisma generate
           echo "Build dự án"
           npm run build
           echo "Reset Bộ Nhớ Swap"
