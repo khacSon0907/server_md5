@@ -7,7 +7,7 @@ import { Response } from 'express';
 export class AuthenController {
   constructor(private readonly authenService: AuthenService) {}
 
-  @Post()
+  @Post('register')
   async register(@Body() createAuthenDto: CreateAuthenDto,@Res() res:Response){
     try{
       let newUser = await this.authenService.register(createAuthenDto);
@@ -23,23 +23,5 @@ export class AuthenController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.authenService.findAll();
-  }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authenService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthenDto: UpdateAuthenDto) {
-    return this.authenService.update(+id, updateAuthenDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authenService.remove(+id);
-  }
 }
