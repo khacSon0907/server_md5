@@ -19,7 +19,9 @@ export class AuthenController {
           throw ("email da ton tai")
         }
       }
+
       this.sendMailService.sendMail(newUser.data.email,"Gửi Email Xác Nhận","đã nhận được email vui lòng xác nhận")
+      
       return res.status(200).json({
         message: 'ok !',
         data: newUser.data
