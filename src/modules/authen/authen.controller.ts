@@ -2,9 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/
 import { AuthenService } from './authen.service';
 import { CreateAuthenDto } from './dto/create-authen.dto';
 import { Response } from 'express';
+import { SendMailService } from '../send-mail/send-mail.service';
 @Controller('authen')
 export class AuthenController {
-  constructor(private readonly authenService: AuthenService) {}
+  constructor(private readonly authenService: AuthenService , private sendMailService:SendMailService) {}
 
   @Post('register')
   async register(@Body() createAuthenDto: CreateAuthenDto,@Res() res:Response){
@@ -18,6 +19,7 @@ export class AuthenController {
           throw ("email da ton tai")
         }
       }
+      this.sendMailService.sendMail(newUser.data.email,"Gửi Email Xác Nhận","đã nhận được email vui lòng xác nhận")
       return res.status(200).json({
         message: 'ok !',
         data: newUser.data
