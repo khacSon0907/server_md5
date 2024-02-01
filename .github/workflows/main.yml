@@ -40,8 +40,8 @@ jobs:
           sed -i 's/DB_HOST/${{ secrets.HOST }}/g' .env
           sed -i 's/DB_PORT/${{ secrets.DB_PORT }}/g' .env
           sed -i 's/DB_NAME/${{ secrets.DB_NAME }}/g' .env
-          sed -i 's/MAIL_GG/${{ secrets.MAIL_GG }}/g' .env
-          sed -i 's/PASSWORD_GG/${{ secrets.PASSWORD_GG }}/g' .env
+          sed -i 's/NAME_EMAIL/${{ secrets.NAME_EMAIL }}/g' .env
+          sed -i 's/PASS_EMAIL/${{ secrets.PASS_EMAIL }}/g' .env
 
           echo "Cài đặt package theo package.json"
           npm ci
