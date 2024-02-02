@@ -28,8 +28,44 @@ export class AuthenService {
         err
       }
     }
-
   }
-
-
+  async findByEmail(id:number){
+    try{
+      let user = await this.primsa.users.findUnique({
+        where:{
+          id
+        }
+      })
+      return {
+        data:user
+      }
+    }
+    catch(err){
+      return {
+        err
+      }
+    }   
+  }
+  async updateUser(email:string){
+    try{
+        let user = await this.primsa.users.update({
+          where:{
+            email
+          },
+          data:{
+            emailcomfirm:true,
+            createAt:String(Date.now())
+          }
+        })
+      return {
+        data:user
+      }
+    }
+    catch(err){
+      return {
+        err
+      }
+    }
+  }
+  
 }

@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/
 import { AuthenService } from './authen.service';
 import { CreateAuthenDto } from './dto/create-authen.dto';
 import { Response } from 'express';
-import { SendMailService } from '../send-mail/send-mail.service';
+import { SendMailService,template } from '../send-mail/send-mail.service';
+import { until } from '../until';
 @Controller('authen')
 export class AuthenController {
   constructor(private readonly authenService: AuthenService , private sendMailService:SendMailService) {}
@@ -20,7 +21,11 @@ export class AuthenController {
         }
       }
 
-      this.sendMailService.sendMail(newUser.data.email,"Gửi Email Xác Nhận","đã nhận được email vui lòng xác nhận")
+      let token = until.token.createToken(newUser.data,String(5 * 60 * 1000));
+      console.log("token", token);
+      
+      this.sendMailService.sendMail(newUser.data.email,"Gửi Email Xác Nhận",template.emailConfrim( newUser.data.username,`${process.env.SV_HOST}/authen/email-confirm/${token}`))
+      
       
       return res.status(200).json({
         message: 'ok !',
@@ -34,5 +39,32 @@ export class AuthenController {
 
     }
   }
+
+  @Get('email-confirm/:token')
+
+  async emailConfirm(@Param('token') token: string, @Res() res: Response) {
+     try{
+      let tokenData = until.token.decodeToken(token);
+      console.log("tokenData", tokenData);
+      if(!tokenData){
+        throw "Token in Valid"
+      }
+     
+      let user = await this.authenService.updateUser(tokenData.email)
+      if(user.err){
+        throw " khong tim thay user"
+      }
+      return res.status(200).send("Email Confirm ok!")
+     }
+     catch(err){
+      console.log("err",err);
+
+      return res.status(500).json({
+        
+        message: err
+      })
+     }
+  }
+
 
 }

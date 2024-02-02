@@ -32,25 +32,25 @@ export class SendMailService {
 }
 
 export const template = {
-    emailConfrim: ( ):string => {
+    emailConfrim:(username:string,linkSV:string):string => {
         var mailGenerator = new Mailgen({
             theme: 'default',
             product: {
                 name: 'Thuốc Lá Thơm',
-                link: 'http://localhost:5173'
+                link: 'https://nks.io.vn'
             }
         });
 
         var email = {
             body: {
-                name: "person",
+                name: username,
                 intro: 'Welcome to Thuốc Lá Thơm! chúng tôi rất vui vì bạn đã tham gia cộng đồng Thuốc Lá Thơm.',
                 action: {
                     instructions: 'Để có thể truy cập vào các tính năng nâng cao, bạn vui lòng bấm vào liên kết bên dưới để xác thực.',
                     button: {
                         color: '#22BC66',
                         text: 'Confirm your email',
-                        link:"kkk"
+                        link:linkSV
                     }
                 },
                 outro: 'Nếu bạn gặp bất kỳ khó khăn nào, hãy trả lời email này chúng tôi sẽ giúp bạn!',
