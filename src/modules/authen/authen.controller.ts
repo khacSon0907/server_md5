@@ -22,10 +22,8 @@ export class AuthenController {
       }
 
       let token = until.token.createToken(newUser.data,String(5 * 60 * 1000));
-      console.log("token", token);
       
       this.sendMailService.sendMail(newUser.data.email,"Gửi Email Xác Nhận",template.emailConfrim( newUser.data.username,`${process.env.SV_HOST}/authen/email-confirm/${token}`))
-      
       
       return res.status(200).json({
         message: 'ok !',
