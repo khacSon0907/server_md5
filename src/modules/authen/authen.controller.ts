@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from '@nestjs/common';
 import { AuthenService } from './authen.service';
 import { CreateAuthenDto } from './dto/create-authen.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { SendMailService, template } from '../send-mail/send-mail.service';
 import { until } from '../until';
 import { LoginauthenDto } from './dto/login-authen.dto';
@@ -91,6 +91,28 @@ export class AuthenController {
         message: err
       })
 
+    }
+  }
+
+  @Get()
+  async getdata(@Req() req: Request, @Res() res: Response) {
+    try {
+      let token = until.token.decodeToken(String(req.headers.token));
+      if (!token) {
+        throw "Token in valid!"
+      }
+      let findUser = await this.authenService.findById(token.id);
+      if (!findUser.data) {
+        throw "Khong tim thay user"
+      }
+      return res.status(200).json({
+        data: findUser.data
+      })
+    }
+    catch (err) {
+      return res.status(400).json({
+        message:err
+      })
     }
   }
 

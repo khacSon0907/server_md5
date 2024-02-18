@@ -35,7 +35,7 @@ export class AuthenService {
     try {
       let findUser = await this.primsa.users.findFirst({
         where: {
-            email: loginUser
+          email: loginUser
         }
       })
       return {
@@ -48,7 +48,7 @@ export class AuthenService {
       }
     }
   }
-  async loginByUserName(username:string) {
+  async loginByUserName(username: string) {
     try {
       let user = await this.primsa.users.findUnique({
         where: {
@@ -84,6 +84,24 @@ export class AuthenService {
       return {
         err
       }
+    }
+  }
+  async findById(id: number) {
+    try {
+        let findUser = await this.primsa.users.findUnique({
+          where: {
+            id
+          }
+        })
+
+        return {
+          data:findUser
+        }
+    }
+    catch (err) {
+        return {
+          err
+        }
     }
   }
 
