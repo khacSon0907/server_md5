@@ -103,7 +103,7 @@ export class AuthenController {
       }
       let findUser = await this.authenService.findById(token.id);
       if (!findUser.data) {
-        throw "Khong tim thay user"
+        throw "User Không Tồn Tại"
       }
       return res.status(200).json({
         data: findUser.data
