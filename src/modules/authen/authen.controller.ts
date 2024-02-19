@@ -94,12 +94,12 @@ export class AuthenController {
     }
   }
 
-  @Get()
+  @Get('data')
   async getdata(@Req() req: Request, @Res() res: Response) {
     try {
       let token = until.token.decodeToken(String(req.headers.token));
       if (!token) {
-        throw "Token in valid!"
+        throw "Token in valid data!"
       }
       let findUser = await this.authenService.findById(token.id);
       if (!findUser.data) {
@@ -123,7 +123,7 @@ export class AuthenController {
       let tokenData = until.token.decodeToken(token);
       console.log("tokenData", tokenData);
       if (!tokenData) {
-        throw "Token in Valid"
+        throw "Token in Valid "
       }
 
       let user = await this.authenService.updateUser(tokenData.email)
