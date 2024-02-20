@@ -54,6 +54,7 @@ jobs:
           sudo swapoff -a; sudo swapon -a
           echo "Reset PM2"
           pm2 delete all
+          echo "chạy pm2"
           pm2 start dist/main.js
           echo "Gửi thông báo!"
           curl -X POST -H "Content-Type: application/json" -H "Authorization:${{ secrets.DISCORD_TOKEN }}" -d '{"content":"Server của tôi đã deploy thành công link: https://api.nks.io.vn/ "}' ${{ secrets.DISCORD_URL }}
