@@ -43,7 +43,7 @@ jobs:
           sed -i 's/NAME_EMAIL/${{ secrets.NAME_EMAIL }}/g' .env
           sed -i 's/PASS_EMAIL/${{ secrets.PASS_EMAIL }}/g' .env
           sed -i 's/KEY_GOOGLE/${{ secrets.KEY_GOOGLE }}/g' .env
-          sed -i 's/URL_GOOGLE/${{ secrets.URL_GOOGLE}}/g' .env
+          sed -i 's/LOGIN_GOOGLE_URL/${{ secrets.LOGIN_GOOGLE_URL}}/g' .env
 
           echo "Cài đặt package theo package.json"
           npm ci
