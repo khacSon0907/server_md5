@@ -6,15 +6,52 @@ import { SendMailService, template } from '../send-mail/send-mail.service';
 import { until } from '../until';
 import { LoginauthenDto } from './dto/login-authen.dto';
 import { compareSync, hashSync } from 'bcrypt';
-
+import axios from 'axios';
 @Controller('authen')
 export class AuthenController {
   constructor(private readonly authenService: AuthenService, private sendMailService: SendMailService) { }
 
+  @Post("google-login")
+  async loginGoogle(@Body() body: {
+    token: string
+  }, @Res() res: Response) {
+    try {
+      let googleRes = await axios.post(`${process.env.GOOLE_URL}${process.env.GOOLGE_KEY}`, {
+        idToken: body.token
+      })
+      let user = await this.authenService.loginByEmail(googleRes.data.users[0].email);
+
+      if (!user.data) {
+        let newUser = {
+          username: String(Math.ceil(Date.now() * Math.random())),
+          password: 'kokoko@979797',
+          email: googleRes.data.users[0].email,
+          avatar: googleRes.data.users[0].photoUrl,
+        }
+        let newUserRes = await this.authenService.register(newUser);
+
+        if(!newUserRes.data) {
+              throw false
+        }        
+        return res.status(200).json({
+          token: until.token.createToken(newUserRes.data, "1d")
+        })  
+      }   
+       else{
+        return res.status(200).json({
+          token: until.token.createToken(user.data, "1d")
+        })   
+      }
+    }
+    catch (err) {
+      return res.status(413).json({
+        message: err ? err : 'Loi'
+      })
+    }
+  }
   @Post('login')
   async login(@Body() loginauthenDto: LoginauthenDto, @Res() res: Response) {
     try {
-
       let count = 0;
       for (let i = 0; i < loginauthenDto.loginUser.length; i++) {
         if (loginauthenDto.loginUser[i] == '@') {
@@ -33,7 +70,6 @@ export class AuthenController {
         if (!checkPass == true) {
           throw "Mật khẩu không đúng"
         }
-
         return res.status(200).json({
           message: "ok",
           token: until.token.createToken(findUser.data, "1d")
@@ -50,7 +86,7 @@ export class AuthenController {
         }
         return res.status(200).json({
           message: "ok",
-          data: findUser.data
+          token: until.token.createToken(findUser.data, "1d")
         })
 
       }
@@ -111,7 +147,7 @@ export class AuthenController {
     }
     catch (err) {
       return res.status(400).json({
-        message:err
+        message: err
       })
     }
   }
