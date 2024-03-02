@@ -32,7 +32,7 @@ export class AuthenController {
         let newUserName = JSON.parse(body.data).username
         let fileName = `img_${Date.now() * Math.random()}.${file.mimetype.split('/')[1]}`
         writeFileSync('public/avatar/' + fileName, file.buffer)
-        let newAvatar = `http://127.0.0.1:3000/avatar/${fileName}`
+        let newAvatar = `https://api.nks.io.vn/avatar/${fileName}`
         let changeUser = await this.authenService.changeInfoUser(email, newUserName, newAvatar)
         return res.status(200).json({
           message: "succes ok ",
