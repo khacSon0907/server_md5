@@ -105,4 +105,47 @@ export class AuthenService {
     }
   }
 
+  async changeInfoUser (email: string, newUserName: string ,newAvatar:string){
+    try{
+      let user = await this.primsa.users.update({
+        where: {
+          email
+        },
+        data: {
+          username:newUserName,
+          avatar:newAvatar,
+          createAt: String(Date.now())
+        }
+      })
+      return {
+        data: user
+      }
+      
+    
+    }
+    catch(err){
+      return {
+        err
+      }
+
+    }
+  }
+  async findByEmail(email: string) {
+    try {
+        let findUser = await this.primsa.users.findUnique({
+          where: {
+            email
+          }
+        })
+
+        return {
+          data:findUser
+        }
+    }
+    catch (err) {
+        return {
+          err
+        }
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AuthenService } from './authen.service';
 import { CreateAuthenDto } from './dto/create-authen.dto';
 import { Response, Request } from 'express';
@@ -6,10 +6,47 @@ import { SendMailService, template } from '../send-mail/send-mail.service';
 import { until } from '../until';
 import { LoginauthenDto } from './dto/login-authen.dto';
 import { compareSync, hashSync } from 'bcrypt';
+import { FileInterceptor } from '@nestjs/platform-express';
 import axios from 'axios';
+import { writeFileSync } from 'fs';
 @Controller('authen')
 export class AuthenController {
   constructor(private readonly authenService: AuthenService, private sendMailService: SendMailService) { }
+  @Post('changeInfo')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadFile(@Body() body: any, @UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+    try {
+      if (!file) {
+        let email = JSON.parse(body.data).email
+        let newUserName = JSON.parse(body.data).username
+        let findUser = await this.authenService.findByEmail(email)
+        let newAvatar = findUser.data.avatar
+        let changeUser = await this.authenService.changeInfoUser(email, newUserName, newAvatar)
+        return res.status(200).json({
+          message: "succes ok ",
+          data: changeUser.data
+        })
+      }
+      else {
+        let email = JSON.parse(body.data).email
+        let newUserName = JSON.parse(body.data).username
+        let fileName = `img_${Date.now() * Math.random()}.${file.mimetype.split('/')[1]}`
+        writeFileSync('public/avatar/' + fileName, file.buffer)
+        let newAvatar = `http://127.0.0.1:3000/avatar/${fileName}`
+        let changeUser = await this.authenService.changeInfoUser(email, newUserName, newAvatar)
+        return res.status(200).json({
+          message: "succes ok ",
+          data: changeUser.data
+        })
+      }
+    }
+    catch (err) {
+      return res.status(404).json({
+        message: err
+      })
+    }
+
+  }
 
   @Post("google-login")
   async loginGoogle(@Body() body: {
@@ -30,17 +67,17 @@ export class AuthenController {
         }
         let newUserRes = await this.authenService.register(newUser);
 
-        if(!newUserRes.data) {
-              throw false
-        }        
+        if (!newUserRes.data) {
+          throw false
+        }
         return res.status(200).json({
           token: until.token.createToken(newUserRes.data, "1d")
-        })  
-      }   
-       else{
+        })
+      }
+      else {
         return res.status(200).json({
           token: until.token.createToken(user.data, "1d")
-        })   
+        })
       }
     }
     catch (err) {
