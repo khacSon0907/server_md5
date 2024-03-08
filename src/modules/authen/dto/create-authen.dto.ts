@@ -2,15 +2,15 @@ import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class CreateAuthenDto {
     @IsEmail()
-    email:string;
+    email: string;
+    
+    @IsNotEmpty()
+    username: string;
 
     @IsNotEmpty()
-    username:string;
+    password: string;
 
     @IsNotEmpty()
-    password:string;
-
-    @IsNotEmpty()
-    avatar:string;
+    avatar: string;
 }
 

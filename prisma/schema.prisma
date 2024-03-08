@@ -21,15 +21,37 @@ enum AvalibleStatus {
 }
 
 model users {
-  id    Int    @id @default(autoincrement())
-  username String @unique
-  password String
-  email String @unique
-  emailcomfirm Boolean @default(false)
-  role UserRole @default(member)
-  status AvalibleStatus @default(active)
-  createAt String
-  updateAt String
-  avatar String @db.LongText
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  password     String
+  email        String         @unique
+  emailcomfirm Boolean        @default(false)
+  role         UserRole       @default(member)
+  status       AvalibleStatus @default(active)
+  createAt     String
+  updateAt     String
+  avatar       String         @db.LongText
 }
 
+
+model categories {
+  id       Int            @id @default(autoincrement())
+  title    String         @unique
+  status   AvalibleStatus @default(active)
+  products products[]
+}
+
+model products {
+  id        Int            @id @default(autoincrement())
+  avatar    String         @db.LongText
+  name        String        @unique
+  origin    String
+  tar       String
+  nicotine  String
+  smell     String
+  description String
+  price     Float
+  status    AvalibleStatus @default(active)
+  productId Int
+  category  categories     @relation(fields: [productId], references: [id])
+}

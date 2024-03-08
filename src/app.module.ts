@@ -5,9 +5,11 @@ import { PrimsaModule } from './modules/primsa/primsa.module';
 import { AuthenModule } from './modules/authen/authen.module';
 import { SendMailModule } from './modules/send-mail/send-mail.module';
 import { ConfigModule } from '@nestjs/config';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { ProductsModule } from './modules/products/products.module';
 
 @Module({
-  imports: [ConfigModule.forRoot() , PrimsaModule, AuthenModule, SendMailModule],
+  imports: [ConfigModule.forRoot() , PrimsaModule, AuthenModule, SendMailModule, CategoriesModule, ProductsModule],
   controllers: [AppController],
   providers: [AppService],
 })

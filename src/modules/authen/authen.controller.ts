@@ -130,7 +130,7 @@ export class AuthenController {
 
     }
     catch (err) {
-      return res.status(404).json({
+      return res.status(500).json({
         message: err
       })
     }
@@ -167,10 +167,15 @@ export class AuthenController {
     }
   }
 
-  @Get('data')
-  async getdata(@Req() req: Request, @Res() res: Response) {
+  @Post('data')
+  async getdata(@Body() body: any, @Res() res: Response) {
     try {
-      let token = until.token.decodeToken(String(req.headers.token));
+      console.log("body", body.token);
+      
+      let token = until.token.decodeToken(body.token);
+      
+      console.log("token ", token);
+      
       if (!token) {
         throw "Token in valid data!"
       }
@@ -182,7 +187,7 @@ export class AuthenController {
         data: findUser.data
       })
     }
-    catch (err) {
+    catch (err:any) {
       return res.status(400).json({
         message: err
       })
