@@ -1,26 +1,105 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-
+import { PrimsaService } from '../primsa/primsa.service';
 @Injectable()
 export class ProductsService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(private primsa: PrimsaService) { }
+
+
+  async findProduct (id:number) {
+    try{
+        let findbyId = await this.primsa.products.findUnique({
+            where: {
+              id
+            }
+        })
+        return {
+          data:findbyId
+        }
+    }
+    catch(err){
+        return{
+          err
+        }
+    }
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async editProduct(id: number, creaProduct:CreateProductDto,image:string) {
+    try {
+      let editProduct = await this.primsa.products.update({
+        where: {
+          id,
+        },
+        data: {
+          ...creaProduct,
+          avatar:image
+        }
+      })
+      return {
+        data:editProduct
+      }
+    }
+    catch (err) {
+      return {
+        err
+      }
+    }
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async deleteProduct(id: number) {
+    try {
+      let deleteCategory = await this.primsa.products.delete({
+        where: {
+          id
+        }
+      })
+      return {
+        data: deleteCategory
+      }
+    }
+    catch (err) {
+      return {
+        err
+      }
+    }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async getAll() {
+    try {
+      let findAll = await this.primsa.products.findMany();
+
+      return {
+        data: findAll
+      }
+    }
+    catch (err) {
+      return {
+        message: err
+      }
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async create(createProductDto: CreateProductDto, image: string) {
+    try {
+      let creaProduct = await this.primsa.products.create({
+        data: {
+          ...createProductDto,
+          avatar: image
+        }
+      })
+      return {
+        data: creaProduct
+      }
+    }
+    catch (err) {
+      return {
+        err
+      }
+
+    }
   }
+
+
 }

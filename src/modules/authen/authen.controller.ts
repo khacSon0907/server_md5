@@ -32,7 +32,7 @@ export class AuthenController {
         let newUserName = JSON.parse(body.data).username
         let fileName = `img_${Date.now() * Math.random()}.${file.mimetype.split('/')[1]}`
         writeFileSync('public/avatar/' + fileName, file.buffer)
-        let newAvatar = `https://api.nks.io.vn/avatar/${fileName}`
+        let newAvatar = `${process.env.SV_HOST}/avatar/${fileName}`
         let changeUser = await this.authenService.changeInfoUser(email, newUserName, newAvatar)
         return res.status(200).json({
           message: "succes ok ",
@@ -97,6 +97,7 @@ export class AuthenController {
       }
       if (count == 1) {
         let findUser = await this.authenService.loginByEmail(loginauthenDto.loginUser);
+        // console.log("tim email ", findUser.data);
         if (!findUser.data) {
           throw "Email không tồn tại"
         }
@@ -171,11 +172,11 @@ export class AuthenController {
   async getdata(@Body() body: any, @Res() res: Response) {
     try {
       console.log("body", body.token);
-      
+
       let token = until.token.decodeToken(body.token);
-      
-      console.log("token ", token);
-      
+
+      // console.log("token ", token);
+
       if (!token) {
         throw "Token in valid data!"
       }
@@ -187,7 +188,7 @@ export class AuthenController {
         data: findUser.data
       })
     }
-    catch (err:any) {
+    catch (err: any) {
       return res.status(400).json({
         message: err
       })
@@ -199,7 +200,6 @@ export class AuthenController {
   async emailConfirm(@Param('token') token: string, @Res() res: Response) {
     try {
       let tokenData = until.token.decodeToken(token);
-      console.log("tokenData", tokenData);
       if (!tokenData) {
         throw "Token in Valid "
       }

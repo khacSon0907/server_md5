@@ -31,27 +31,72 @@ model users {
   createAt     String
   updateAt     String
   avatar       String         @db.LongText
+  carts        carts[]
+  receipts     receipts[]
 }
 
+model receipts {
+  id          Int              @id @default(autoincrement())
+  address     String           @db.LongText
+  phoneNumber String
+  status      ReceiptStatuss   @default(shopping)
+  totalAmount Int
+  user        users            @relation(fields: [userId], references: [id])
+  userId      Int
+  details     receiptDetails[]
+}
+
+enum ReceiptStatuss {
+  shopping
+  pendding
+  accepted
+  shipping
+  done
+}
+
+model receiptDetails {
+  id         Int      @id @default(autoincrement())
+  name       String
+  quantity   Int
+  price      Int
+  totalPrice Int
+  product    products @relation(fields: [productId], references: [id])
+  productId  Int
+  receipt    receipts @relation(fields: [receiptId], references: [id])
+  receiptId  Int
+}
+
+model products {
+  id        Int              @id @default(autoincrement())
+  avatar    String           @db.LongText
+  name      String           @unique
+  origin    String?
+  tar       String?
+  nicotine  String?
+  smell     String?
+  price     Int
+  status    AvalibleStatus   @default(active)
+  productId Int
+  category  categories       @relation(fields: [productId], references: [id])
+  carts     carts[]
+  receipts  receiptDetails[]
+}
+
+model carts {
+  id        Int      @id @default(autoincrement())
+  avatar    String   @db.LongText
+  name      String
+  price     Int
+  quantity  Int
+  userId    Int
+  user      users    @relation(fields: [userId], references: [id])
+  productId Int
+  products  products @relation(fields: [productId], references: [id])
+}
 
 model categories {
   id       Int            @id @default(autoincrement())
   title    String         @unique
   status   AvalibleStatus @default(active)
   products products[]
-}
-
-model products {
-  id        Int            @id @default(autoincrement())
-  avatar    String         @db.LongText
-  name        String        @unique
-  origin    String
-  tar       String
-  nicotine  String
-  smell     String
-  description String
-  price     Float
-  status    AvalibleStatus @default(active)
-  productId Int
-  category  categories     @relation(fields: [productId], references: [id])
 }

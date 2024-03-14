@@ -88,42 +88,49 @@ export class AuthenService {
   }
   async findById(id: number) {
     try {
-        let findUser = await this.primsa.users.findUnique({
-          where: {
-            id
+      let findUser = await this.primsa.users.findUnique({
+        where: {
+          id
+        },
+        include: {
+          receipts: {
+            include: {
+              details: true
+            }
           }
-        })
-
-        return {
-          data:findUser
         }
+      })
+
+      return {
+        data: findUser
+      }
     }
     catch (err) {
-        return {
-          err
-        }
+      return {
+        err
+      }
     }
   }
 
-  async changeInfoUser (email: string, newUserName: string ,newAvatar:string){
-    try{
+  async changeInfoUser(email: string, newUserName: string, newAvatar: string) {
+    try {
       let user = await this.primsa.users.update({
         where: {
           email
         },
         data: {
-          username:newUserName,
-          avatar:newAvatar,
+          username: newUserName,
+          avatar: newAvatar,
           createAt: String(Date.now())
         }
       })
       return {
         data: user
       }
-      
-    
+
+
     }
-    catch(err){
+    catch (err) {
       return {
         err
       }
@@ -132,20 +139,21 @@ export class AuthenService {
   }
   async findByEmail(email: string) {
     try {
-        let findUser = await this.primsa.users.findUnique({
-          where: {
-            email
-          }
-        })
-
-        return {
-          data:findUser
+      let findUser = await this.primsa.users.findUnique({
+        where: {
+          email
         }
+      })
+
+      return {
+        data: findUser
+      }
     }
     catch (err) {
-        return {
-          err
-        }
+      return {
+        err
+      }
     }
   }
+
 }
